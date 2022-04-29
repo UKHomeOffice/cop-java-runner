@@ -1,0 +1,46 @@
+---
+kind: pipeline
+type: kubernetes
+name: matrix-1
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  pull: always
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  # The drone docker plugin uses the entries in the .tags file to tag the image
+  - printf "18.%s.0,latest" $(date +%Y%m%d%H%M) > .tags
+  - docker build -t cop-java-runner:latest .
+  when:
+    event:
+    - push
+
+- name: image_scan
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  pull: always
+  environment:
+    FAIL_ON_DETECTION: true
+    SHOW_ALL_VULNERABILITIES: true
+    IMAGE_NAME: cop-java-runner:latest
+    LOCAL_IMAGE: true
+    TIMEOUT: 600s
+    TOLERATE: low
+    WHITELIST_FILE: whitelist
+  when:
+    event:
+    - push
+
+services:
+- name: docker
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
+- name: anchore-submission-server
+  pull: always
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  commands:
+  - /run.sh server
