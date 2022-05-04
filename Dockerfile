@@ -1,4 +1,20 @@
-FROM docker.io/library/eclipse-temurin:18
+FROM docker.io/library/eclipse-temurin:18 as jre-build
+
+RUN ${JAVA_HOME}/bin/jlink \
+        --add-modules ALL-MODULE-PATH \
+        --compress=2 \
+        --no-header-files \
+        --no-man-pages \
+        --strip-debug \
+        --output /javaruntime
+
+
+FROM docker.io/library/ubuntu:latest
+
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH "${JAVA_HOME}/bin:${PATH}"
+
+COPY --from=jre-build /javaruntime "${JAVA_HOME}"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
