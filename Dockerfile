@@ -9,7 +9,7 @@ RUN ${JAVA_HOME}/bin/jlink \
         --output /javaruntime
 
 
-FROM docker.io/library/debian:buster-slim
+FROM docker.io/library/ubuntu:latest
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
