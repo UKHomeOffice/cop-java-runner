@@ -12,7 +12,7 @@ steps:
   pull: always
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   commands:
-  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  - n=0; while [ "$n" -lt 60 ] && (! docker stats --no-stream &>/dev/null); do n=$(( n + 1 )); sleep 1; done
   # The drone docker plugin uses the entries in the .tags file to tag the image
   - printf "18-jlink.%s.0,latest" $(date +%Y%m%d%H%M) > .tags
   - docker build --pull -t cop-java-runner:latest .
