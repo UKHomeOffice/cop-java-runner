@@ -20,6 +20,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN whoami
 RUN ls -l /etc/apt/trusted.gpg.d/
+RUN date
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y upgrade && \
