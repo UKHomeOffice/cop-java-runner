@@ -9,7 +9,7 @@ RUN ${JAVA_HOME}/bin/jlink \
         --output /javaruntime
 
 
-FROM docker.io/library/ubuntu:latest
+FROM docker.io/library/ubuntu@sha256:aa6c2c047467afc828e77e306041b7fa4a65734fe3449a54aa9c280822b0d87d
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
