@@ -14,7 +14,7 @@ steps:
   commands:
   - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
   # The drone docker plugin uses the entries in the .tags file to tag the image
-  - printf "18.%s.0,latest" $(date +%Y%m%d%H%M) > .tags
+  - printf "18-jlink.%s.0,latest" $(date +%Y%m%d%H%M) > .tags
   - docker build -t cop-java-runner:latest .
   when:
     event:
