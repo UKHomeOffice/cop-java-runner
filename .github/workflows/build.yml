@@ -1,0 +1,21 @@
+---
+name: Image Build
+on:
+  push:
+    branches:
+      - 'gh-actions'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          tags: gh
+          pull: true
