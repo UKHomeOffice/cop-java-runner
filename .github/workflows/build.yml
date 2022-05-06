@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ['18', '17', '16', '11']
+        java-version: ['11']
 
     steps:
       - name: Checkout
@@ -31,7 +31,7 @@ jobs:
 
       - name: Sanity check
         run: |
-          docker run --rm cop-java-runner:${{ matrix.java-version }}.latest java --version
+          docker run --rm cop-java-runner:${{ matrix.java-version }}.latest java --a-bad-command
 
       - name: Test Happy
         run:
