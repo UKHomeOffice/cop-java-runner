@@ -1,5 +1,5 @@
 ---
-name: Image Build
+name: Build Images
 on:
   push:
     branches:
@@ -7,7 +7,11 @@ on:
 
 jobs:
   build:
+    name: Build container images
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['18', '17']
 
     steps:
       - name: Checkout
@@ -17,9 +21,10 @@ jobs:
         id: date
         run: echo "::set-output name=datetime::$(date +%Y%m%d%H%M)"
 
-      - name: Build Image
+      - name: Build Java Runner ${{ matrix.java-version }}
         uses: docker/build-push-action@v3
         with:
+          build-args: JAVA_VERSION=${{ matrix.java-version }}
           context: .
-          tags: cop-java-runner:18.${{ steps.date.outputs.datetime }}.0,cop-java-runner:18.latest
+          tags: cop-java-runner:${{ matrix.java-version }}.${{ steps.date.outputs.datetime }}.0,cop-java-runner:${{ matrix.java-version}}.latest
           pull: true
