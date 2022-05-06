@@ -28,3 +28,11 @@ jobs:
           context: .
           tags: cop-java-runner:${{ matrix.java-version }}.${{ steps.date.outputs.datetime }}.0,cop-java-runner:${{ matrix.java-version}}.latest
           pull: true
+
+      - name: Sanity check
+        run: |
+          docker run --rm cop-java-runner:${{ matrix.java-version }}.latest java --version
+
+      - name: Test Happy
+        run:
+          echo "The test passed"
