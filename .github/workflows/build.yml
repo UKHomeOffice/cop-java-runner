@@ -3,6 +3,10 @@ name: Build Images
 on:
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: cop-java-runner
+  IMAGE_REPO: quay.io/ukhomeofficedigital
+
 jobs:
   get_datetime:
     runs-on: ubuntu-latest
@@ -40,10 +44,10 @@ jobs:
           load: true
           pull: true
           push: false
-          tags: cop-java-runner:${{ matrix.java-version }}.test
+          tags: ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.test
 
       - name: Basic sanity check of image before push
-        run: docker run --rm cop-java-runner:${{ matrix.java-version }}.test java --version
+        run: docker run --rm ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.test java --version
 
       - name: Build Java Runner ${{ matrix.java-version }} and Push to Quay
         uses: docker/build-push-action@v3
@@ -52,4 +56,4 @@ jobs:
           context: .
           pull: true
           push: true
-          tags: quay.io/ukhomeofficedigital/cop-java-runner:${{ matrix.java-version }}.${{ needs.get_datetime.outputs.datetime }}.0
+          tags: ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.${{ needs.get_datetime.outputs.datetime }}.0
