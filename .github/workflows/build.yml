@@ -1,0 +1,50 @@
+---
+name: Build Images
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build container images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['11', '16', '17', '18']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get date and time
+        id: date
+        run: echo "::set-output name=datetime::$(date +%Y%m%d%H%M)"
+
+      - name: Login to Quay.io
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+      - name: Build Java Runner ${{ matrix.java-version }} and export to Docker for test
+        uses: docker/build-push-action@v3
+        with:
+          build-args: JAVA_VERSION=${{ matrix.java-version }}
+          context: .
+          load: true
+          pull: true
+          push: false
+          tags: cop-java-runner:${{ matrix.java-version }}.test
+
+      - name: Basic sanity check of image before push
+        run: |
+          docker run --rm cop-java-runner:${{ matrix.java-version }}.test java --version
+
+      - name: Build Java Runner ${{ matrix.java-version }} and Push to Quay
+        uses: docker/build-push-action@v3
+        with:
+          build-args: JAVA_VERSION=${{ matrix.java-version }}
+          context: .
+          pull: true
+          push: true
+          tags: quay.io/ukhomeofficedigital/cop-java-runner:${{ matrix.java-version }}.${{ steps.date.outputs.datetime }}.0
