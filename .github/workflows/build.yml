@@ -1,7 +1,9 @@
 ---
 name: Build Images
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'time-sep-job'
 
 env:
   IMAGE_NAME: cop-java-runner
