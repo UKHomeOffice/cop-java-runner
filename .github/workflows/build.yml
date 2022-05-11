@@ -1,7 +1,9 @@
 ---
 name: Build Images
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'jre'
 
 env:
   IMAGE_NAME: cop-java-runner
@@ -56,4 +58,4 @@ jobs:
           context: .
           pull: true
           push: true
-          tags: ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.${{ needs.get_datetime.outputs.datetime }}.0
+          tags: ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ matrix.java-version }}-jre.${{ needs.get_datetime.outputs.datetime }}.0
