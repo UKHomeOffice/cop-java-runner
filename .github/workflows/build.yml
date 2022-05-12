@@ -1,7 +1,9 @@
 ---
 name: Build Images
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - 'scan'
 
 env:
   IMAGE_NAME: cop-java-runner
@@ -49,11 +51,11 @@ jobs:
       - name: Basic sanity check of image before push
         run: docker run --rm ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.test java --version
 
-      - name: Build Java Runner ${{ matrix.java-version }} and Push to Quay
-        uses: docker/build-push-action@v3
-        with:
-          build-args: JAVA_VERSION=${{ matrix.java-version }}
-          context: .
-          pull: true
-          push: true
-          tags: ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ matrix.java-version }}-jre.${{ needs.get_datetime.outputs.datetime }}.0
+    # - name: Build Java Runner ${{ matrix.java-version }} and Push to Quay
+    #   uses: docker/build-push-action@v3
+    #   with:
+    #     build-args: JAVA_VERSION=${{ matrix.java-version }}
+    #     context: .
+    #     pull: true
+    #     push: true
+    #     tags: ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ matrix.java-version }}-jre.${{ needs.get_datetime.outputs.datetime }}.0
