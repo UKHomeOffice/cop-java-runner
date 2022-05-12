@@ -15,4 +15,4 @@ RUN addgroup --gid 1000 java && \
 
 USER java
 WORKDIR /app
-ENTRYPOINT ["/bin/bash"]
+CMD ["/bin/bash"]
