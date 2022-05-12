@@ -1,22 +1,4 @@
-ARG JAVA_VERSION
-
-FROM docker.io/library/eclipse-temurin:${JAVA_VERSION} as jlink-build
-
-RUN ${JAVA_HOME}/bin/jlink \
-        --add-modules ALL-MODULE-PATH \
-        --compress=2 \
-        --no-header-files \
-        --no-man-pages \
-        --strip-debug \
-        --output /javaruntime
-
-
-FROM docker.io/library/ubuntu:latest
-
-ENV JAVA_HOME=/opt/java/openjdk
-ENV PATH "${JAVA_HOME}/bin:${PATH}"
-
-COPY --from=jlink-build /javaruntime "${JAVA_HOME}"
+FROM docker.io/library/eclipse-temurin:18-jre
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -33,3 +15,4 @@ RUN addgroup --gid 1000 java && \
 
 USER java
 WORKDIR /app
+CMD ["/bin/bash"]
