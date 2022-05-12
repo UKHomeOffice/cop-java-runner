@@ -63,6 +63,7 @@ jobs:
         id: scan
         with:
           sbom: ${{ env.IMAGE_NAME }}.${{ matrix.java-version }}-jre.spdx.json
+          fail-build: false
           acs-report-enable: true
 
       - name: Upload Scan SARIF file
