@@ -25,7 +25,7 @@ jobs:
     needs: get_datetime
     strategy:
       matrix:
-        java-version: ['11', '16', '17', '18']
+        java-version: ['11']
 
     steps:
       - name: Checkout
@@ -67,7 +67,7 @@ jobs:
           acs-report-enable: true
 
       - name: Upload Scan SARIF file
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 
