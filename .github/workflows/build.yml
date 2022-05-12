@@ -66,6 +66,9 @@ jobs:
           severity-cutoff: critical
           acs-report-enable: true
 
+      - name: Debug
+        run: ls -la
+
       - name: Upload Scan SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
