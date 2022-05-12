@@ -46,10 +46,29 @@ jobs:
           load: true
           pull: true
           push: false
-          tags: ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.test
+          tags: ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}-jre.test
 
       - name: Basic sanity check of image before push
-        run: docker run --rm ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}.test java --version
+        run: docker run --rm ${{ env.IMAGE_NAME }}:${{ matrix.java-version }}-jre.test java --version
+
+      - name: Create SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.IMAGE_NAME }}:${{ matrix.java-version}}-jre.test
+          artifact-name: ${{ env.IMAGE_NAME }}.${{ matrix.java-version }}-jre.sbom.spdx.json
+          output-file: ${{ env.IMAGE_NAME }}.${{ matrix.java-version }}-jre.spdx.json
+
+      - name: Scan SBOM
+        uses: anchore/scan-action@v3
+        id: scan
+        with:
+          sbom: ${{ env.IMAGE_NAME }}.${{ matrix.java-version }}-jre.spdx.json
+          acs-report-enable: true
+
+      - name: Upload Scan SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
     # - name: Build Java Runner ${{ matrix.java-version }} and Push to Quay
     #   uses: docker/build-push-action@v3
