@@ -69,6 +69,9 @@ jobs:
       - name: Debug
         run: ls -la
 
+      - name: Inspect Scan SARIF file
+        run: cat ${{ steps.scan.outputs.sarif }}
+
       - name: Upload Scan SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
